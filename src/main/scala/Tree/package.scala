@@ -7,7 +7,7 @@ object Tree {
     def helper(node: TreeNode[String], n: Int): Seq[String] =
       node match {
         case TreeNode(data, Nil) => Seq("+-" + data)
-        case TreeNode(data, children) => helper(TreeNode(data, Nil), n) ++ {
+        case TreeNode(data, children) => Seq("+-" + data) ++ {
           if (n == 1) children.flatMap(t => helper(t, n + 1).map(s => "| " + s)) ++ Seq("|")
           else children.flatMap(t => helper(t, n + 1).map(s => "  " + s))
         }
@@ -16,18 +16,30 @@ object Tree {
     helper(root, 0)
   }
 
+  def simpleDisplay(root: TreeNode[String]): Seq[String] =
+    root match {
+        case TreeNode(data, children) =>
+          Seq(data) ++ children.flatMap(t => simpleDisplay(t).map(s => "    " + s))
+    }
+
   def main(args: Array[String]): Unit = {
-    asciiDisplay(TreeNode("Root",
+    val tree1 = TreeNode("Root",
       children = List(TreeNode("level1-1"),
         TreeNode("level1-2"),
-        TreeNode("level1-3")))).foreach(println)
+        TreeNode("level1-3")))
 
-    asciiDisplay(TreeNode("Root",
+    val tree2 = TreeNode("Root",
       children = List(
         TreeNode("level1-1",
           children = TreeNode("level2-1", children = TreeNode("level3-1") :: Nil) :: Nil),
         TreeNode("level1-2"),
-        TreeNode("level1-3")))).foreach(println)
+        TreeNode("level1-3")))
+
+    simpleDisplay(tree1).foreach(println)
+    simpleDisplay(tree2).foreach(println)
+
+    asciiDisplay(tree1).foreach(println)
+    asciiDisplay(tree2).foreach(println)
     }
 }
 
